@@ -1,0 +1,18 @@
+{
+    "manifest_version": 3,
+    "name": "タイトルに開いた順番を追記する",
+    "version": "1.0",
+    "host_permissions": [
+        "https://*/*"
+    ],
+    "action": {
+      "default_icon": "icon.png"
+    },
+    "icons": {
+      "48": "icon.png"
+    },
+    "background": {
+      "service_worker": "background.js"
+    },
+    "permissions": ["scripting"]
+  }
