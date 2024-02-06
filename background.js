@@ -21,20 +21,21 @@ chrome.tabs.onRemoved.addListener(function(tabId, removeInfo) {
 });
 
 
-// 未実装_タブアイコンがクリックされた場合の関数
+// 拡張機能のアイコンがクリックされたら、タイトルをもとに戻す
 chrome.action.onClicked.addListener(async (tab) => {
-  let [tabInfo] = await chrome.scripting.executeScript({
-    target: {tabId: tab.id},
-    function: () => {
-      // console.log(document.title);
-      return {
-        title: document.title
-      };
-    },
-  });
-
-  console.log(tabInfo.result.title);
-  // ここで取得したタイトルを使って何かしらの処理を行うことができます
+    allViewTabId.forEach((t, i) => {
+        chrome.tabs.get(t, function(tab){
+            chrome.scripting.executeScript({
+                target: {tabId: tab.id},
+                function: function(i){
+                    const regex = /^\d+:/;
+                    document.title = document.title.replace(regex,'');
+                },
+                args: [i],
+            });
+        });
+    });
+    allViewTabId = [];
 });
 
 
@@ -45,7 +46,7 @@ async function putViewNoToTitle(tabId) {
 
         // chromeの設定画面の場合は更新しない
         if (chrome.runtime.lastError) {
-            console.log("chrome.runtime.lastError");
+            // console.log("chrome.runtime.lastError");
 
             // タブが削除された場合にallViewTabIdからidを削除する
             RemoveIdFromAllViewTabId(tabId);
@@ -72,7 +73,6 @@ async function putViewNoToTitle(tabId) {
 
 function ChangeTitleFromAllViewTabId(params) {
     allViewTabId.forEach((t, i) => {
-        console.log(t);
         chrome.tabs.get(t, function(tab){
             chrome.scripting.executeScript({
                 target: {tabId: tab.id},
